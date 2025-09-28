@@ -9,7 +9,7 @@
 
 ### Target Audience:
 
-We are looking to serve a similar audience to sites such as [cardgames.io](https://cardgames.io/cribbage/), which are people who like to play simple games on the fly.
+We are looking to serve a similar audience to sites such as [cardgames.io](https://cardgames.io/), which are people who like to play simple games on the fly.
 
 ### What We Plan to Accomplish:
 
