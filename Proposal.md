@@ -2,7 +2,7 @@
 
 ## Group Details:
 
- **Members**: Aaron Waller, Tien Nguyen, etc
+ **Members**: Aaron Waller, Tien Nguyen, Aditya Patel, Aishwarya Silam
  **Group Number**: 20
 
 ## Proposal
@@ -23,3 +23,5 @@ The games in question will be:
 
 
 3. 1000 Clicks in 10 minutes: The user is challenged to get 1,000 points within a timeframe of 10 minutes. To gain a point, the user can simply click on a button and it will add a point. However, the user can also trade points to gain powerups which could help them get points in a quicker timeframe. While the user will have 10 minutes to complete the challenge, it's best they complete it as fast as possible 
+
+4.  Trust AI?!?!: a web-based trivia bluff game, where trivia questions will be generated dynamically using AI so each round is unique. The AI opponent will give answers that may be true or bluff, based on its personality (Honest, Sneaky, or Chaotic). Players will see the question, the AI’s answer, their current score and round, and buttons to Trust or Call Bluff, along with power-ups like Fact Check and Double Down. Points are earned or lost based on correct decisions, and a final score is displayed at the end, creating an interactive challenge of knowledge and intuition.
