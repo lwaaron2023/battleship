@@ -20,13 +20,13 @@ const Row = (props) => {
         }
 
 
-        cells.push(<Cell row={props.row} col={j} size={props.size} id = {props.id} key={`cell:${props.row}:${j}`} content={contents}/>)
+        cells.push(<Cell row={props.row} col={j} size={props.size} id={props.id} key={`cell:${props.row}:${j}`} content={contents} placing={props.placing} />)
     }
 
     //allows dynamic columns
     return (
         <>
-            <div className={"flex flex-row"} id={`${props.id}:row:${props.row}`} key={`${props.id}:row:${props.row}`}>
+            <div className={"flex flex-row"} key={`${props.id}:row:${props.row}`}>
                 {cells}
             </div>
         </>
