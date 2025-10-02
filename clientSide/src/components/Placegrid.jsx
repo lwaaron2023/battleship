@@ -24,6 +24,12 @@ const Placegrid = (props) => {
         }
     }
 
+    onkeydown = (e)=>{
+        if(e.key === "r" && placing){
+            console.log("rotating ship");
+        }
+    }
+
     const handlePlaceClick = (row, col) =>{
 
     }
