@@ -1,9 +1,1 @@
 @import "tailwindcss";
-
-.active-cell:hover {
-    background-color: darkslategray;
-}
-
-.inactive-cell:hover{
-    background-color: red;
-}

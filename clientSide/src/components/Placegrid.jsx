@@ -8,8 +8,22 @@ const Placegrid = (props) => {
 
     const [placing, setPlacing] = React.useState(false);
 
+    const pointers = []
+    for (let i = 0; i < 4; i++) {
+        const pointer = document.createElement("div");
+        pointer.id = 'pointer'+i;
+        pointer.style.position = "absolute";
+        pointer.style.height = 1 + "rem";
+        pointer.style.width = 1 + "rem";
+        pointer.style.display = 'none';
+        pointer.style.backgroundColor = '#000000';
+        pointer.style.pointerEvents = "none";
+        document.body.appendChild(pointer);
+        pointers.push(pointer);
+    }
+
     const handleShipClick = (id, size) =>{
-        const selection = document.getElementById(id)
+        let selection = document.getElementById(id)
         if(selection && selection.getAttribute("disabled") !== "true" && !placing){
             console.log("id",id,"size",size);
             setPlacing(true);
@@ -17,6 +31,20 @@ const Placegrid = (props) => {
             /*
             Need to write function that allows the user place ships
              */
+            selection = document.getElementById(props.id+':0:0');
+            console.log(selection.style.width)
+            document.body.style.cursor = "none";
+            for(let i = 0; i < size; i++) {
+                pointers[i].style.display = "block";
+            }
+            document.body.addEventListener('mousemove', (e)=>{
+                console.log(e)
+                for(let i = 0; i < size; i++){
+
+                    pointers[i].style.top = `${e.clientY}px`;
+                    pointers[i].style.left = `${e.clientX+(i*parseInt(selection.style.width)*16)}px`;
+                }
+            });
 
 
             //will need to set this in the end

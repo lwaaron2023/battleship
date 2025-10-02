@@ -5,29 +5,8 @@ const Cell = (props) => {
     const row = props.row;
     const col = props.col;
     const id = `${props.id}:${row}:${col}`;
-    const placing = props.placing;
-    const [hasShip, setHasShip] = useState(false);
 
-    useEffect(() => {
-        if(row > 0 && col > 0) {
-            const self = document.getElementById(id)
-            if (self) {
-                if (placing) {
-                    if (hasShip) {
-                        self.classList.add("inactive-cell")
-                    } else {
-                        self.classList.add("active-cell")
-                    }
-                } else {
-                    if (hasShip) {
-                        self.classList.remove("inactive-cell")
-                    } else {
-                        self.classList.remove("active-cell")
-                    }
-                }
-            }
-        }
-    },[placing])
+
 
     if(props.content !== ""){
         content = (
