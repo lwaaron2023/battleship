@@ -1,5 +1,3 @@
-import {useEffect, useState} from "react";
-
 const Cell = (props) => {
     let content;
     const row = props.row;
