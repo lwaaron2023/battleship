@@ -4,98 +4,207 @@ import Shipoption from "./Shipoption.jsx";
 
 
 
+
 const Placegrid = (props) => {
 
+    const [toPlace, setToPlace] = React.useState(["ship1","ship2","ship3","ship4","ship5","ship6"]);
+    const [size, setSize] = React.useState(0);
+    const [shipID, setShipID] = React.useState("");
+    const [rows, setRows] = React.useState([]);
     const [placing, setPlacing] = React.useState(false);
-
-    const pointers = []
-    for (let i = 0; i < 4; i++) {
-        const pointer = document.createElement("div");
-        pointer.id = 'pointer'+i;
-        pointer.style.position = "absolute";
-        pointer.style.height = 1 + "rem";
-        pointer.style.width = 1 + "rem";
-        pointer.style.display = 'none';
-        pointer.style.backgroundColor = '#000000';
-        pointer.style.pointerEvents = "none";
-        document.body.appendChild(pointer);
-        pointers.push(pointer);
-    }
-
-    const handleShipClick = (id, size) =>{
-        let selection = document.getElementById(id)
-        if(selection && selection.getAttribute("disabled") !== "true" && !placing){
-            console.log("id",id,"size",size);
-            setPlacing(true);
-            selection.style.backgroundColor = "#000000";
-            /*
-            Need to write function that allows the user place ships
-             */
-            selection = document.getElementById(props.id+':0:0');
-            console.log(selection.style.width)
-            document.body.style.cursor = "none";
-            for(let i = 0; i < size; i++) {
-                pointers[i].style.display = "block";
+    let direction = false;
+    React.useEffect(
+        ()=>{
+            direction = false;
+            const plc = placing;
+            const sID = shipID;
+            const s = size;
+            const tp = toPlace;
+            const index = tp.indexOf(sID);
+            const pointer = document.getElementById("pointer")
+            if(plc && index>=0 && s>0 && pointer){
+                pointer.classList.remove("hidden");
+                pointer.style.width = `${7*s}rem`;
+                pointer.style.height = `${7}rem`;
+                // console.log("beginning placement")
+                // console.log(tp.slice(0,index).concat(tp.slice(index+1)));
+                setToPlace(tp.slice(0,index).concat(tp.slice(index+1)));
+                document.body.style.cursor = "none";
+                const temp = document.getElementById(sID);
+                temp.classList.remove('bg-gray-200');
+                temp.classList.remove('hover:bg-gray-200');
+                temp.classList.add('bg-black');
+                temp.innerHTML = "";
             }
-            document.body.addEventListener('mousemove', (e)=>{
-                console.log(e)
-                for(let i = 0; i < size; i++){
+            else{
+                setPlacing(false);
+            }
+        }, [placing]
+    )
 
-                    pointers[i].style.top = `${e.clientY}px`;
-                    pointers[i].style.left = `${e.clientX+(i*parseInt(selection.style.width)*16)}px`;
+
+
+
+    window.onload = () => {
+        const rowValues = [];
+        const numRows = props.rows;
+        const numCols = props.cols;
+        for (let i = 0; i < numRows; i += 1) {
+            rowValues.push(<Row row={i} cols={numCols} size={props.size} id={props.id} key={`row:${i}`}/>)
+        }
+        //Number of ships to place, used in calculations for spacing
+        setRows(rowValues);
+        //allows dynamic columns
+    }
+
+    const handleRotate = (e)=>{
+        direction=!direction;
+        const plcing = placing;
+        const s = size;
+        if(placing) {
+            const ptr = document.getElementById("pointer")
+            if(ptr){
+               ptr.style.width = direction?"7rem":`${7*s}rem`;
+               ptr.style.height = direction?`${7*s}rem`:"7rem";
+            }
+        }
+    };
+
+    const handleMouseMove = (e)=> {
+        // console.log(e)
+        const plcing = placing;
+        if (plcing) {
+            const ptr = document.getElementById(`pointer`);
+            if(ptr) {
+                ptr.style.top = `${e.clientY-20}px`;
+                ptr.style.left = `${e.clientX-20}px`;
+            }
+
+        }
+    };
+
+    document.body.addEventListener("keypress", handleRotate);
+    document.body.addEventListener('mousemove', handleMouseMove);
+    const extractInfo= (id)=>{
+        const temp = id.split(":");
+        temp.splice(0,1);
+        const rtr = {
+            "row":-1,
+            "col":-1
+        }
+        if(temp.length === 2) {
+            rtr.row = parseInt(temp[0]);
+            rtr.col = parseInt(temp[1]);
+        }
+        return rtr;
+    }
+    const validateClick = (id, size) =>{
+        // console.log(id, size);
+        let rtr = false;
+        const info = extractInfo(id)
+        try{
+            if(info.row > 0 && info.col > 0){
+                if(direction){
+                    if(info.row <= props.rows-size) {
+                        rtr = true;
+                    }
                 }
-            });
+                else{
+                    if(info.col <= props.cols-size) {
+                        rtr = true;
+                    }
+                }
+            }
+        }catch(e){
+            console.log(e);
+        }
 
+        return rtr;
+    }
 
-            //will need to set this in the end
-            selection.setAttribute("disabled", "true");
+    const handleClick = (e) => {
+        const sze = size;
+        const plc = placing;
+        if (e.target.id && plc && !e.target.id.includes("ship")) {
+            const legalPlace = validateClick(e.target.id, sze);
+            // console.log("first check",legalPlace);
+            if (legalPlace) {
+                const info = extractInfo(e.target.id);
+                // console.log(info,sze);
+                const elements = []
+                for(let i = 0; i<sze; i++){
+                    const element = document.getElementById(`${props.id}:${direction?info.row+i:info.row}:${direction?info.col:info.col+i}`)
+                    if(element){
+                        elements.push(element)
+                    }
+                }
+                let secondCheck = true;
+                elements.forEach(element => {
+                    if(!element.classList.contains("bg-gray-200")){
+                        element.classList.add("p-2");
+                        element.innerText = "Overlap not allowed"
+                        element.classList.add("text-red-500");
+                        setInterval(()=>{
+                            element.innerText = "";
+                            element.classList.remove("text-red-500");
+                            element.classList.remove("p-2");
+                        },3000)
+                        secondCheck = false;
+                    }
+                })
+                // console.log("second check",secondCheck);
+                if(secondCheck) {
+                    elements.forEach(element => {
+                        element.classList.remove('bg-gray-200');
+                        element.classList.add('bg-gray-500');
+                    })
+                    const pointer = document.getElementById("pointer")
+                    if (pointer) {
+                        pointer.classList.add('hidden');
+                        pointer.style.width = "0";
+                        pointer.style.height = "0";
+                    }
+                    setPlacing(false);
+                    document.body.style.cursor = "default";
+                }
+            }
         }
     }
 
-    onkeydown = (e)=>{
-        if(e.key === "r" && placing){
-            console.log("rotating ship");
-        }
-    }
 
-    const handlePlaceClick = (row, col) =>{
-
-    }
-
-    const handleShipHover = (row, col) =>{
-
-    }
-
-    //Ship size: number of ships
-    //4 square: 1
-    //3 square: 2
-    //2 square: 2
-    //1 square: 1
-    //Use 0 to mark ships
-
-    const rowValues = [];
-    const numRows = props.rows;
-    const numCols = props.cols;
-    for (let i = 0; i < numRows; i += 1) {
-        rowValues.push(<Row row={i} cols={numCols} size={props.size} id={props.id} key={`row:${i}`} placing={placing}/>)
-    }
-    //Number of ships to place, used in calculations for spacing
-    const numShips = 6;
-    const temp2 = (numCols-numShips)*props.size/(numShips-1);
-    //allows dynamic columns
     return (
         <>
-            <div className={"flex flex-col mb-10"} id={props.id} key={`${props.id}`}>
-                {rowValues}
+            <div className={"flex flex-col mb-10"} id={props.id} key={`${props.id}`} onClick={handleClick}>
+                {rows}
             </div>
             <div className={"flex flex-row"} id={props.id+"ships"} key={`${props.id} ships`}>
-                <Shipoption shipsize={4} size={props.size} ml = {0} key={'option:1'} id={'ship1'} onClick={()=>{handleShipClick("ship1", 4)}}/>
-                <Shipoption shipsize={3} size={props.size} ml = {temp2} key={'option:2'} id={'ship2'} onClick={()=>{handleShipClick("ship2", 3)}}/>
-                <Shipoption shipsize={3} size={props.size} ml = {temp2} key={'option:3'} id={'ship3'} onClick={()=>{handleShipClick("ship3", 3)}}/>
-                <Shipoption shipsize={2} size={props.size} ml = {temp2} key={'option:4'} id={'ship4'} onClick={()=>{handleShipClick("ship4", 2)}}/>
-                <Shipoption shipsize={2} size={props.size} ml = {temp2} key={'option:5'} id={'ship5'} onClick={()=>{handleShipClick("ship5", 2)}}/>
-                <Shipoption shipsize={1} size={props.size} ml = {temp2} key={'option:6'} id={'ship6'} onClick={()=>{handleShipClick("ship6", 1)}}/>
+                <Shipoption shipsize={4} size={props.size} ml = {0} key={'option:1'} id={'ship1'} onClick={()=>{
+                    setShipID("ship1");
+                    setSize(4)
+                    setPlacing(true);}}/>
+                <Shipoption shipsize={3} size={props.size} ml = {(props.cols-6)*props.size/(5)} key={'option:2'} id={'ship2'} onClick={()=>{
+                    setShipID("ship2");
+                    setSize(3)
+                    setPlacing(true);
+                }}/>
+                <Shipoption shipsize={3} size={props.size} ml = {(props.cols-6)*props.size/(5)} key={'option:3'} id={'ship3'} onClick={()=>{
+                    setShipID("ship3")
+                    setSize(3)
+                    setPlacing(true)}}/>
+                <Shipoption shipsize={2} size={props.size} ml = {(props.cols-6)*props.size/(5)} key={'option:4'} id={'ship4'} onClick={()=>{
+                    setShipID("ship4");
+                    setSize(2);
+                    setPlacing(true)}}/>
+                <Shipoption shipsize={2} size={props.size} ml = {(props.cols-6)*props.size/(5)} key={'option:5'} id={'ship5'} onClick={()=>{
+                    setShipID("ship5")
+                    setSize(2);
+                    setPlacing(true)}}/>
+                <Shipoption shipsize={1} size={props.size} ml = {(props.cols-6)*props.size/(5)} key={'option:6'} id={'ship6'} onClick={()=>{
+                    setShipID("ship6")
+                    setSize(1);
+                    setPlacing(true)}}/>
             </div>
+            <div id={"pointer"} className={"pointer-events-none hidden border-10 bg-transparent"} style={{"position": "absolute", "height":"0em", "width": "0em"}}></div>
         </>
     )
 }

@@ -10,12 +10,14 @@ const Cell = (props) => {
 
     if(props.content !== ""){
         content = (
-            <p className={'text-center font-bold text-2xl'}>{props.content}</p>
+            <p className={'text-center font-bold text-4xl'}>{props.content}</p>
         )
     }
     let rtr;
     if(row === 0 && col === 0){
-        rtr = (<div className={`aspect-square border-1 border-black bg-black flex flex-cols items-center justify-center`} style={{"width":`${props.size}em`,"height":`${props.size}em`}} id={id}></div>)
+        rtr = (<div className={`aspect-square border-1 border-black bg-white flex flex-cols items-center justify-center`} style={{"width":`${props.size}em`,"height":`${props.size}em`}} id={id}>
+            <p className={'text-center text-8xl font-thin justify-self-center'}>X</p>
+        </div>)
     }
     else{
         rtr = (<div className={`aspect-square border-1 bg-gray-200 border-black flex flex-cols items-center justify-center`} style={{"width":`${props.size}em`,"height":`${props.size}em`}} id={id}>
