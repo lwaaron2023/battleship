@@ -12,17 +12,32 @@ const server = http.createServer( app ),
     clients = []
 
     socketServer.on( 'connection', client => {
-        client.groupNum = clients.length>>>1;
         client.id = clients.length;
+        // console.log(`Client ID: ${client.id} connected`);
         /*
         Idea: second person in the pair should always get the first move
          */
         if(client.id & 1){
-            client.send(`server:clientToMove`);
+            const msg = {
+                "user":"server",
+                "row": -1,
+                "col": -1,
+                "message":"clientToMove",
+            }
+            client.send(JSON.stringify(msg));
         }
         // console.log( 'connection',client)
         client.on( 'message', msg => {
-            console.log(client.id,client.groupNum,msg)
+            // console.log("source",client.id,"message",msg,"target",client.id^1);
+            try{
+                const toSend = JSON.parse(msg.toString());
+                console.log(toSend);
+                clients[client.id^1].send(JSON.stringify(toSend));
+            }
+            catch(err){
+                console.log(err)
+            }
+
         })
         // add client to client list
         clients.push(client)

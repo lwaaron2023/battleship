@@ -174,7 +174,7 @@ const Placegrid = (props) => {
     }
 
     const transitionToPlaying = () => {
-        console.log("transitioning to playing");
+        // console.log("transitioning to playing");
         document.body.removeEventListener("keypress", handleRotate);
         document.body.removeEventListener('mousemove', handleMouseMove);
         const toRemove = document.getElementById(`${props.id}ships`);

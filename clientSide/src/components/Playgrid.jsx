@@ -1,11 +1,11 @@
 import Row from "./Row.jsx";
-import React, {useEffect} from "react";
+import React, {useEffect, useState} from "react";
 
 
 const Playgrid = (props)=>{
     const [rows, setRows] = React.useState([]);
-    const turn = false;
-
+    let [turn, setTurn] = useState(false);
+    let [waitingForReply, setWaitingForReply] = useState(false);
     useEffect(()=>{
         if(props.playmode){
             const container = document.getElementById("playfield");
@@ -24,9 +24,21 @@ const Playgrid = (props)=>{
         }
     },[props.playmode])
 
+    useEffect(()=>{
+        const a = props.attacking
+        setTurn(a);
+    },[props.attacking])
+
+    useEffect(()=>{
+        const r = props.waitingForReply;
+        setWaitingForReply(r);
+        waitingForReply = props.waitingForReply;
+    }, [waitingForReply])
 
     const handleClick = (e) => {
-        if(turn) {
+        // console.log(turn,waitingForReply)
+        const [t,r] = [turn, waitingForReply];
+        if(t && !r) {
             const info = props.extractInfo(e.target.id);
             if (info.row <= 0 || info.col <= 0) {
                 const message = document.getElementById("message");
@@ -38,7 +50,27 @@ const Playgrid = (props)=>{
                         message.innerText = "";
                     }, 10000)
                 }
+            }
+            else{
+                const tile = document.getElementById(`${props.id}:${info.row}:${info.col}`);
+                if(tile){
+                    console.log(tile);
+                    if(tile.classList.contains("bg-gray-200")){
+                        props.attack(info.row, info.col);
+                    }
+                    else{
+                        const message = document.getElementById("message");
+                        if (message) {
+                            message.classList.add("text-red-500");
+                            message.innerText = "Invalid target selected, already attacked here";
+                            setInterval(() => {
+                                message.classList.remove("text-red-500");
+                                message.innerText = "";
+                            }, 10000)
+                        }
+                    }
 
+                }
 
             }
         }
