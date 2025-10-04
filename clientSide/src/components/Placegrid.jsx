@@ -85,23 +85,11 @@ const Placegrid = (props) => {
 
     document.body.addEventListener("keypress", handleRotate);
     document.body.addEventListener('mousemove', handleMouseMove);
-    const extractInfo= (id)=>{
-        const temp = id.split(":");
-        temp.splice(0,1);
-        const rtr = {
-            "row":-1,
-            "col":-1
-        }
-        if(temp.length === 2) {
-            rtr.row = parseInt(temp[0]);
-            rtr.col = parseInt(temp[1]);
-        }
-        return rtr;
-    }
+
     const validateClick = (id, size) =>{
         // console.log(id, size);
         let rtr = false;
-        const info = extractInfo(id)
+        const info = props.extractInfo(id)
         try{
             if(info.row > 0 && info.col > 0){
                 if(direction){
@@ -129,7 +117,7 @@ const Placegrid = (props) => {
             const legalPlace = validateClick(e.target.id, sze);
             // console.log("first check",legalPlace);
             if (legalPlace) {
-                const info = extractInfo(e.target.id);
+                const info = props.extractInfo(e.target.id);
                 // console.log(info,sze);
                 const elements = []
                 for(let i = 0; i<sze; i++){
@@ -139,15 +127,25 @@ const Placegrid = (props) => {
                     }
                 }
                 let secondCheck = true;
+                const message = document.getElementById("message");
+
                 elements.forEach(element => {
                     if(!element.classList.contains("bg-gray-200")){
+                        if(message){
+                            message.classList.add("text-red-500");
+                            message.innerText = "Overlap not allowed";
+                        }
                         element.classList.add("p-2");
-                        element.innerText = "Overlap not allowed"
+                        element.innerText = "Overlap here"
                         element.classList.add("text-red-500");
                         setInterval(()=>{
                             element.innerText = "";
                             element.classList.remove("text-red-500");
                             element.classList.remove("p-2");
+                            if(message){
+                                message.innerText = "";
+                                message.classList.remove("text-red-500");
+                            }
                         },3000)
                         secondCheck = false;
                     }
@@ -165,12 +163,26 @@ const Placegrid = (props) => {
                         pointer.style.height = "0";
                     }
                     setPlacing(false);
+                    const tp = toPlace;
                     document.body.style.cursor = "default";
+                    if(tp.length <= 0){
+                        transitionToPlaying()
+                    }
                 }
             }
         }
     }
 
+    const transitionToPlaying = () => {
+        console.log("transitioning to playing");
+        document.body.removeEventListener("keypress", handleRotate);
+        document.body.removeEventListener('mousemove', handleMouseMove);
+        const toRemove = document.getElementById(`${props.id}ships`);
+        if(toRemove){
+            toRemove.remove()
+            props.cb(true);
+        }
+    }
 
     return (
         <>
