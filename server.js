@@ -1,16 +1,15 @@
 const express = require('express')
 const http = require('http')
-const ViteExpress = require('vite-express')
 const  ws = require('ws')
-
+const path = require('path')
 
 const app = express()
 app.use(express.static('public'))
-app.set('views', __dirname + 'public/views')
 app.set('view engine', 'pug')
+app.set('views', path.join(__dirname + '/views'))
 
 app.get('/', (req, res) => {
-    res.render('index')
+    res.render('index.pug',  {title:'Battleship'})
 })
 
 const server = http.createServer( app ),
@@ -50,5 +49,3 @@ const server = http.createServer( app ),
     })
 
 server.listen( 3000 || process.env.PORT)
-
-ViteExpress.bind( app, server )
