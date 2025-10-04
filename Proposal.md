@@ -17,7 +17,7 @@ We plan on making a web application that conists of various games.  The applicat
 
 The games in question will be:
 
-1. Battleship: The classic game made by hasbro that allows a user to play against an ai or another person connected to the website.
+1. Battleship: The classic game made by hasbro that allows a user to play against another person connected to the website.
 
 2. Squish-The-Cockroach: This game is for anyone who enjoys the calming feel of tap-and-click interactions. In a quick 30-second round, squish as many cockroaches as you can—each squish earns a credit. Log in at the end to save your score. Simple by design, it taps into ***self-regulation through sensory input***: repetitive, small actions that can help ease stress, anxiety, and boredom.
 
