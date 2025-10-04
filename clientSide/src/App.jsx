@@ -42,7 +42,7 @@ function App() {
                     try {
                         const pos = await JSON.parse(msg.data);
                         // console.log(pos);
-                        console.log("ship tiles left", shipTiles);
+                        // console.log("ship tiles left", shipTiles);
                         const user = pos["user"];
                         const row = pos["row"];
                         const col = pos["col"];
@@ -119,7 +119,7 @@ function App() {
                                             postGame.classList.remove("hidden");
                                         }
                                     }
-                                    console.log("winner")
+
                                 }
                             }
                             else if (message === 'received') {

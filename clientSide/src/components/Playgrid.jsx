@@ -54,7 +54,7 @@ const Playgrid = (props)=>{
             else{
                 const tile = document.getElementById(`${props.id}:${info.row}:${info.col}`);
                 if(tile){
-                    console.log(tile);
+                    // console.log(tile);
                     if(tile.classList.contains("bg-gray-200")){
                         props.attack(info.row, info.col);
                     }

@@ -3,9 +3,9 @@ import http from 'http'
 import ViteExpress from 'vite-express'
 import { WebSocketServer } from 'ws'
 
+
 const app = express()
 app.use(express.static('public'))
-
 
 const server = http.createServer( app ),
     socketServer = new WebSocketServer({ server }),
