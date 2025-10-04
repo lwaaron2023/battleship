@@ -1,14 +1,20 @@
-import express from 'express'
-import http from 'http'
-import ViteExpress from 'vite-express'
-import { WebSocketServer } from 'ws'
+const express = require('express')
+const http = require('http')
+const ViteExpress = require('vite-express')
+const  ws = require('ws')
 
 
 const app = express()
 app.use(express.static('public'))
+app.set('views', __dirname + 'public/views')
+app.set('view engine', 'pug')
+
+app.get('/', (req, res) => {
+    res.render('index')
+})
 
 const server = http.createServer( app ),
-    socketServer = new WebSocketServer({ server }),
+    socketServer = new ws.WebSocketServer({ server }),
     clients = []
 
     socketServer.on( 'connection', client => {
