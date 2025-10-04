@@ -14,6 +14,12 @@ const server = http.createServer( app ),
     socketServer.on( 'connection', client => {
         client.groupNum = clients.length>>>1;
         client.id = clients.length;
+        /*
+        Idea: second person in the pair should always get the first move
+         */
+        if(client.id & 1){
+            client.send(`server:clientToMove`);
+        }
         // console.log( 'connection',client)
         client.on( 'message', msg => {
             console.log(client.id,client.groupNum,msg)
