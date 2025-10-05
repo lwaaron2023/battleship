@@ -12,6 +12,10 @@ app.get('/', (req, res) => {
     res.render('index.pug',  {title:'Battleship'})
 })
 
+app.get('/favicon.', (req, res) => {
+    res.render('index.pug',  {title:'Battleship'})
+})
+
 const server = http.createServer( app ),
     socketServer = new ws.WebSocketServer({ server }),
     clients = []
